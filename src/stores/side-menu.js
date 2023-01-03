@@ -5,16 +5,16 @@ const sideMenu = atom({
   default: {
     menu: [
       {
-        icon: "Home",
+        icon: "Trello",
         pathname: "/list",
         title: "Tareas",
       },
-      {
-        icon: "Trello",
-        pathname: "/list/:taskId/tasks",
-        title: "Subtareas",
-        // ignore: true,
-      },
+      // {
+      //   icon: "Trello",
+      //   pathname: "/list/:taskId/tasks",
+      //   title: "Subtareas",
+      //   // ignore: true,
+      // },
     ],
   },
 });

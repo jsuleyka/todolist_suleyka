@@ -1,4 +1,5 @@
 const baseURL = import.meta.env.VITE_APP_API_URL;
+const homeURL = import.meta.env.VITE_APP_HOME_URL;
 
 // Adaptador del endpoint url
 export const fetchData = (url, method, data) => 
@@ -32,10 +33,11 @@ export const fetchDataList = (endpoint, method) => {
 
 // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-export const fetchLessToken = (endpoint, data, method = 'GET') => {
-    const url = `${baseURL}/${endpoint}`
+export const fetchLessToken = (endpoint, method = 'GET', data) => {
+    const url = `${homeURL}${endpoint}`;
+
     if(method === 'GET'){
-        return fetch(url)
+        return fetch(url).then(data => data.json()).catch(error => console.log('Error:', error));
     }else {
         return fetch(url, {
             method,

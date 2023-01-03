@@ -5,7 +5,7 @@ import {
   ModalBody,
 } from "@/base-components";
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { fetchWithToken } from "@/api";
 
 function Main() {
@@ -20,9 +20,7 @@ function Main() {
   const [keyword1, setKeyword1] = useState('');
   const [keyword2, setKeyword2] = useState('');
   const [keyword3, setKeyword3] = useState('');
-  // const [keywords, setKeywords] = useState([]);
   let myKeywords = [];
-  // const navigateTo = useNavigate();
 
   const handleChangeTitle = e => {
     setTitle(e.target.value);

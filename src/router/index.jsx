@@ -5,6 +5,7 @@ import SimpleMenu from "../layouts/simple-menu/Main";
 import TopMenu from "../layouts/top-menu/Main";
 import Page1 from "../views/page-1/Main";
 import Page2 from "../views/page-2/Main";
+import Home from "../views/home/Main";
 
 function Router() {
   const routes = [
@@ -13,13 +14,17 @@ function Router() {
       element: <SideMenu />,
       children: [
         {
+          path: "",
+          element: <Home />,
+        },
+        {
           path: "list",
           element: <Page1 />,
         },
-        {
-          path: "list/:taskId/tasks",
-          element: <Page2 />,
-        },
+        // {
+        //   path: "list/:taskId/tasks",
+        //   element: <Page2 />,
+        // },
       ],
     },
     {
@@ -27,12 +32,12 @@ function Router() {
       element: <SimpleMenu />,
       children: [
         {
-          path: "list",
-          element: <Page1 />,
+          path: "",
+          element: <Home />,
         },
         {
-          path: "list/:taskId/tasks",
-          element: <Page2 />,
+          path: "list",
+          element: <Page1 />,
         },
       ],
     },
@@ -41,13 +46,17 @@ function Router() {
       element: <TopMenu />,
       children: [
         {
+          path: "",
+          element: <Home />,
+        },
+        {
           path: "list",
           element: <Page1 />,
         },
-        {
-          path: "list/:taskId/tasks",
-          element: <Page2 />,
-        },
+        // {
+        //   path: "list/:taskId/tasks",
+        //   element: <Page2 />,
+        // },
       ],
     },
     {

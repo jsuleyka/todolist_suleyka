@@ -34,7 +34,7 @@ function Main() {
       console.log(res)
 
       if (res.success) {
-        navigateTo('/list');
+        navigateTo('/');
       }
     });
   }

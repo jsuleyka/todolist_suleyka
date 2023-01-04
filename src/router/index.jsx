@@ -10,7 +10,7 @@ import Home from "../views/home/Main";
 function Router() {
   const routes = [
     {
-      path: "/",
+      path: "/admin",
       element: <SideMenu />,
       children: [
         {
@@ -60,7 +60,7 @@ function Router() {
       ],
     },
     {
-      path: "/login",
+      path: "/",
       element: <Login />,
     },
   ];

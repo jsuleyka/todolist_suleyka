@@ -4,6 +4,7 @@ import logoUrl from "@/assets/images/logo.svg";
 import illustrationUrl from "@/assets/images/illustration.svg";
 import { useState, useEffect } from "react";
 import React from "react";
+import { Lucide, Notification } from "@/base-components";
 import { useNavigate } from "react-router-dom";
 import { fetchWithToken } from "@/api";
 
@@ -14,6 +15,7 @@ function Main() {
   const [user, setUser] = useState({});
   const [token, setToken] = useState('');
   const login = { email, password };
+  const [errorMessage, setErrorMessage] = useState(null);
  
   const handleChangeEmail = e => {
     setEmail(e.target.value);
@@ -32,9 +34,16 @@ function Main() {
       localStorage.setItem("user-info", res.user);
 
       console.log(res)
+      console.log( typeof res.status);
 
       if (res.success) {
         navigateTo('/');
+      }
+
+      if (res.status) {
+        console.log('Entra');
+        setErrorMessage(res.message);
+        console.log(errorMessage);
       }
     });
   }
@@ -75,6 +84,7 @@ function Main() {
               </div>
             </div>
             {/* END: Login Info */}
+
             {/* BEGIN: Login Form */}
             <div className="xl:shadow-lg h-screen xl:h-auto flex py-5 xl:py-0 my-2 xl:my-0">
               <div className="my-auto mx-auto xl:ml-20 bg-white dark:bg-darkmode-600 xl:bg-transparent px-5 sm:px-8 py-8 xl:p-0 rounded-md shadow-md xl:shadow-none w-full sm:w-3/4 lg:w-2/4 xl:w-auto">
@@ -95,6 +105,34 @@ function Main() {
                     onChange={handleChangePassword}
                   />
                 </div>
+
+                <Notification message={errorMessage}/>
+
+                <div className="text-center">
+                  {/* BEGIN: Notification Content */}
+                  <Notification message={errorMessage}
+                    // getRef={(el)=> {
+                    //   successNotification.current = el;
+                    //   }}
+                      className="flex"
+                      >
+                      <Lucide icon="CheckCircle" className="text-success" />
+                      <div className="ml-4 mr-4">
+                          <div className="font-medium">Message Saved!</div>
+                          <div className="mt-1 text-slate-500">
+                              The message will be sent in 5 minutes.
+                          </div>
+                      </div>
+                  </Notification>
+                  {/* END: Notification Content */}
+
+                  {/* BEGIN: Notification Toggle */}
+                  {/* <Button variant="primary" onClick={successNotificationToggle}>
+                      Show Notification
+                  </Button> */}
+                  {/* END: Notification Toggle */}
+              </div>
+
                 <div className="intro-x mt-5 xl:mt-8 text-center xl:text-left">
                   {/* <Link to="/" className="btn btn-primary py-3 px-4 w-full align-top">Login</Link> */}
                   <button 

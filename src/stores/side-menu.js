@@ -6,12 +6,12 @@ const sideMenu = atom({
     menu: [
       {
         icon: "Trello",
-        pathname: "/list",
+        pathname: "/admin/list",
         title: "Tareas",
       },
       // {
       //   icon: "Trello",
-      //   pathname: "/list/:taskId/tasks",
+      //   pathname: "/admin/list/:taskId/tasks",
       //   title: "Subtareas",
       //   // ignore: true,
       // },

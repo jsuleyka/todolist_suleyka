@@ -37,7 +37,7 @@ function Main() {
       console.log( typeof res.status);
 
       if (res.success) {
-        navigateTo('/');
+        navigateTo('/admin');
       }
 
       if (res.status) {

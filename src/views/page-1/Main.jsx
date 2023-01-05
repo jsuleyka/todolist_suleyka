@@ -5,10 +5,11 @@ import {
   ModalBody,
 } from "@/base-components";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { fetchWithToken } from "@/api";
 
 function Main() {
+  const navigateTo = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [addModal, setAddModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -39,12 +40,6 @@ function Main() {
       setListTasks(res);
       setIsLoading(false);
     });
-
-    // fetchDataList('list', 'GET').then((res) => {
-    //   console.log(res);
-    //   setListTasks(res);
-    //   setIsLoading(false);
-    // });
   }, []);
   
   const handleSubmit = e => {
@@ -109,6 +104,10 @@ function Main() {
     setListTasks(newList);
   };
 
+  const handleViewTasks = taskId => {
+    navigateTo('/admin/list/' + taskId + '/tasks');
+  };
+
   if (isLoading) { // si está cargando, mostramos un texto que lo indique
     return (
       <div className="h-screen flex justify-center items-center">
@@ -157,8 +156,12 @@ function Main() {
 
                   <div className="intro-y flex items-center mt-10 pt-5">
                     <Tippy content="Ver Tareas">
-                      <Link 
-                        to={"/list/" + task.id + "/tasks"}
+                      <Link
+                        // onClick={() => {
+                        //   handleViewTasks(task.id);
+                        // }}
+                        // `list/${handleTaskId}`
+                        to={`${task.id}/tasks`}
                         className="btn btn-secondary flex items-center mr-3">
                           <Lucide icon="Eye" className="w-4 h-4" />
                       </Link>
@@ -170,7 +173,7 @@ function Main() {
                           handleEdit(task.id);
                         }}
                         className="btn btn-outline-secondary flex items-center mr-3">
-                            <Lucide icon="CheckSquare" className="w-4 h-4" />
+                          <Lucide icon="CheckSquare" className="w-4 h-4" />
                       </a>
                     </Tippy>
                     <Tippy content="Eliminar">

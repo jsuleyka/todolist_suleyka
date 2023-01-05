@@ -26,11 +26,6 @@ function Main() {
   
   // Obtener mi lista de subtareas
   const listFetching = () => {
-    // fetchDataList(`list/${taskId}/tasks`, 'GET').then((res) => {
-    //   setSubTasks(res);
-    //   setIsLoading(false);
-    // });
-
     fetchWithToken(`list/${taskId}/tasks`, {}, 'GET').then((res) => { 
       setSubTasks(res);
       setIsLoading(false);

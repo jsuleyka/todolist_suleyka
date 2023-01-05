@@ -21,10 +21,10 @@ function Router() {
           path: "list",
           element: <Page1 />,
         },
-        // {
-        //   path: "list/:taskId/tasks",
-        //   element: <Page2 />,
-        // },
+        {
+          path: "list/:taskId/tasks",
+          element: <Page2 />,
+        },
       ],
     },
     {
@@ -38,6 +38,10 @@ function Router() {
         {
           path: "list",
           element: <Page1 />,
+        },
+        {
+          path: "list/:taskId/tasks",
+          element: <Page2 />,
         },
       ],
     },
@@ -53,10 +57,10 @@ function Router() {
           path: "list",
           element: <Page1 />,
         },
-        // {
-        //   path: "list/:taskId/tasks",
-        //   element: <Page2 />,
-        // },
+        {
+          path: "list/:taskId/tasks",
+          element: <Page2 />,
+        },
       ],
     },
     {

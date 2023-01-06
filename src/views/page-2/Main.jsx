@@ -55,9 +55,7 @@ function Main() {
     if (!!subTaskFiltered) {
       subTaskFiltered.title = title;
 
-      fetchWithToken(`list/${taskId}/tasks/${handleSubTaskId}`, { title }, 'PATCH').then((res) => { 
-        console.log(res);
-      });
+      fetchWithToken(`list/${taskId}/tasks/${handleSubTaskId}`, { title }, 'PATCH').then((res) => { });
       setEditModal(false);
     }
     else {  // Sino, crear objeto con nueva tarea
@@ -66,8 +64,7 @@ function Main() {
         completed: false
       };
 
-      fetchWithToken(`list/${taskId}/tasks`, newSubTask, 'POST').then((res) => { 
-        console.log(res);
+      fetchWithToken(`list/${taskId}/tasks`, newSubTask, 'POST').then((res) => {
         setSubTasks([...subTasks, res]);
       });
       setAddModal(false);
@@ -103,11 +100,8 @@ function Main() {
     if (!!subTaskFiltered) {
       subTaskFiltered.completed = !status;
 
-      fetchWithToken(`list/${taskId}/tasks/${handleSubTaskId}`, { completed: !status }, 'PATCH').then((res) => { 
-        console.log(res);
-      });
+      fetchWithToken(`list/${taskId}/tasks/${handleSubTaskId}`, { completed: !status }, 'PATCH').then((res) => { });
     }
-    
     setStatusConfirmationModal(false);
   };
 
@@ -118,9 +112,7 @@ function Main() {
   };
 
   const confirmDeleteTask = () => {
-    fetchWithToken(`list/${taskId}/tasks/${handleSubTaskId}`, {}, 'DELETE').then((res) => { 
-      console.log(res);
-    });
+    fetchWithToken(`list/${taskId}/tasks/${handleSubTaskId}`, {}, 'DELETE').then((res) => { });
 
     setDeleteConfirmationModal(false);
     const newList = subTasks.filter(subTask => subTask.id !== handleSubTaskId);

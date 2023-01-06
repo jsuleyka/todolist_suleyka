@@ -4,19 +4,26 @@ import logoUrl from "@/assets/images/logo.svg";
 import illustrationUrl from "@/assets/images/illustration.svg";
 import { useState, useEffect } from "react";
 import React from "react";
-import { Lucide, Notification } from "@/base-components";
+import { Alert, Lucide } from "@/base-components";
+import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import { fetchWithToken } from "@/api";
 
 function Main() {
   const navigateTo = useNavigate();
+  const [notification, setNotification] = useState({
+    type: "",
+    message: "",
+  });
+
+  // const [stateAlert, setStateAlert] = useState(false);
+  // const [errorMessage, setErrorMessage] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState({});
   const [token, setToken] = useState('');
   const login = { email, password };
-  const [errorMessage, setErrorMessage] = useState(null);
- 
+  
   const handleChangeEmail = e => {
     setEmail(e.target.value);
   };
@@ -24,26 +31,31 @@ function Main() {
     setPassword(e.target.value);
   };
 
+  const notify = msg => toast(msg);
+
   const handleSubmitLogin = () => {
     // Obtener mi login
     fetchWithToken('auth/login', login, 'POST').then((res) => { 
       setToken(res.accessToken);
       setUser(res.user);
+      console.log(res);
 
       localStorage.setItem("token-info", res.accessToken);
       localStorage.setItem("user-info", res.user);
-
-      console.log(res)
-      console.log( typeof res.status);
 
       if (res.success) {
         navigateTo('/admin');
       }
 
       if (res.status) {
-        console.log('Entra');
-        setErrorMessage(res.message);
-        console.log(errorMessage);
+        // setErrorMessage(res.message);
+        // setStateAlert(true);
+        // notify(res.message);
+
+        setNotification({
+          type: "error",
+          message: res.message,
+        });
       }
     });
   }
@@ -105,36 +117,9 @@ function Main() {
                     onChange={handleChangePassword}
                   />
                 </div>
-
-                <Notification message={errorMessage}/>
-
-                <div className="text-center">
-                  {/* BEGIN: Notification Content */}
-                  <Notification message={errorMessage}
-                    // getRef={(el)=> {
-                    //   successNotification.current = el;
-                    //   }}
-                      className="flex"
-                      >
-                      <Lucide icon="CheckCircle" className="text-success" />
-                      <div className="ml-4 mr-4">
-                          <div className="font-medium">Message Saved!</div>
-                          <div className="mt-1 text-slate-500">
-                              The message will be sent in 5 minutes.
-                          </div>
-                      </div>
-                  </Notification>
-                  {/* END: Notification Content */}
-
-                  {/* BEGIN: Notification Toggle */}
-                  {/* <Button variant="primary" onClick={successNotificationToggle}>
-                      Show Notification
-                  </Button> */}
-                  {/* END: Notification Toggle */}
-              </div>
+                {/* <ToastContainer className="toastify-content" /> */}
 
                 <div className="intro-x mt-5 xl:mt-8 text-center xl:text-left">
-                  {/* <Link to="/" className="btn btn-primary py-3 px-4 w-full align-top">Login</Link> */}
                   <button 
                     onClick={handleSubmitLogin}
                     className="btn btn-primary py-3 px-4 w-full align-top">
@@ -147,6 +132,30 @@ function Main() {
           </div>
         </div>
       </div>
+
+      {/* BEGIN: Alert Content */}       
+      {notification.type.includes("error") && (
+        <Alert className="fixed z-50 top-[5vw] right-[5vw] alert-danger w-[20vw] flex items-center mb-2">
+          {({ dismiss }) => (
+            <>
+              <Lucide icon="AlertOctagon" className="w-6 h-6 mr-2" />
+              <span>{notification.message}</span>
+              <button
+                type="button"
+                className="btn-close text-white"
+                aria-label="Close"
+                onClick={() => {
+                  dismiss();
+                  setNotification({ type: "", message: "" });
+                }}
+              >
+                <Lucide icon="X" className="ml-5 w-4 h-4" />
+              </button>
+            </>
+          )}
+        </Alert>
+      )}
+      {/* END: Alert Content */}
     </>
   );
 }

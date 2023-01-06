@@ -1,15 +1,19 @@
 import {
+  Alert,
   Lucide,
-  Tippy,
   Modal,
   ModalBody,
+  Tippy
 } from "@/base-components";
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { fetchWithToken } from "@/api";
 
 function Main() {
-  const navigateTo = useNavigate();
+  const [notification, setNotification] = useState({
+    type: "",
+    message: "",
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [addModal, setAddModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -52,8 +56,6 @@ function Main() {
       taskFiltered.title = title;
       taskFiltered.keywords = '[\"' + keyword1 + '\",\"' + keyword2 + '\",\"' + keyword3 + '\"]';
 
-      console.log(myKeywords);
-
       fetchWithToken(`list/${handleTaskId}`, { title, keywords: myKeywords}, 'PATCH').then((res) => { });
       setEditModal(false);
     }
@@ -64,8 +66,14 @@ function Main() {
         keywords: keywordsList
       };
 
-      fetchWithToken('list', newTask, 'POST').then((res) => { 
+      fetchWithToken('list', newTask, 'POST').then((res) => {
         console.log(res);
+        if (res.msg) {
+          setNotification({
+            type: "success",
+            message: res.msg,
+          });
+        }
         setListTasks([...listTasks, res.list]);
       });
       
@@ -102,10 +110,6 @@ function Main() {
     setDeleteConfirmationModal(false);
     const newList = listTasks.filter(task => task.id !== handleTaskId);
     setListTasks(newList);
-  };
-
-  const handleViewTasks = taskId => {
-    navigateTo('/admin/list/' + taskId + '/tasks');
   };
 
   if (isLoading) { // si está cargando, mostramos un texto que lo indique
@@ -157,10 +161,6 @@ function Main() {
                   <div className="intro-y flex items-center mt-10 pt-5">
                     <Tippy content="Ver Tareas">
                       <Link
-                        // onClick={() => {
-                        //   handleViewTasks(task.id);
-                        // }}
-                        // `list/${handleTaskId}`
                         to={`${task.id}/tasks`}
                         className="btn btn-secondary flex items-center mr-3">
                           <Lucide icon="Eye" className="w-4 h-4" />
@@ -404,6 +404,52 @@ function Main() {
         </ModalBody>
       </Modal>
       {/* END: Delete Confirmation Modal */}
+
+      {/* BEGIN: Alert Content */}       
+      {notification.type.includes("error") && (
+        <Alert className="fixed z-50 top-[5vw] right-[5vw] alert-danger w-[20vw] flex items-center mb-2">
+          {({ dismiss }) => (
+            <>
+              <Lucide icon="AlertOctagon" className="w-6 h-6 mr-2" />
+              <span>{notification.message}</span>
+              <button
+                type="button"
+                className="btn-close text-white"
+                aria-label="Close"
+                onClick={() => {
+                  dismiss();
+                  setNotification({ type: "", message: "" });
+                }}
+              >
+                <Lucide icon="X" className="ml-5 w-4 h-4" />
+              </button>
+            </>
+          )}
+        </Alert>
+      )}
+
+      {notification.type.includes("success") && (
+        <Alert className="fixed z-50 top-[5vw] right-[5vw] alert-success text-white w-[20vw] flex items-center mb-2">
+          {({ dismiss }) => (
+            <>
+              <Lucide icon="AlertTriangle" className="w-6 h-6 mr-2" />
+              <span>{notification.message}</span>
+              <button
+                type="button"
+                className="btn-close text-white"
+                aria-label="Close"
+                onClick={() => {
+                  dismiss();
+                  setNotification({ type: "", message: "" });
+                }}
+              >
+                <Lucide icon="X" className="ml-5 w-4 h-4" />
+              </button>
+            </>
+          )}
+        </Alert>
+      )}
+      {/* END: Alert Content */}
     </>
   );
 }

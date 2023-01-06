@@ -362,9 +362,9 @@ function Main() {
               icon="XCircle"
               className="w-16 h-16 text-danger mx-auto mt-3"
             />
-            <div className="text-3xl mt-5">Are you sure?</div>
+            <div className="text-3xl mt-5">¿Está seguro?</div>
             <div className="text-slate-500 mt-2">
-              Do you really want to update the status this record? <br />
+              ¿Realmente desea actualizar el estado de este registro? <br />
             </div>
           </div>
           <div className="px-5 pb-8 text-center">
@@ -401,10 +401,10 @@ function Main() {
               icon="XCircle"
               className="w-16 h-16 text-danger mx-auto mt-3"
             />
-            <div className="text-3xl mt-5">Are you sure?</div>
+            <div className="text-3xl mt-5">¿Está seguro?</div>
             <div className="text-slate-500 mt-2">
-              Do you really want to delete these records? <br />
-              This process cannot be undone.
+              ¿Realmente desea eliminar este registro? <br />
+              Este proceso no se puede deshacer.
             </div>
           </div>
           <div className="px-5 pb-8 text-center">

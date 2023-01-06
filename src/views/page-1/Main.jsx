@@ -8,12 +8,16 @@ import {
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { fetchWithToken } from "@/api";
+import i18n from "i18next";
+import { initReactI18next, useTranslation } from "react-i18next";
+import Backend from "i18next-http-backend";
 
 function Main() {
   const [notification, setNotification] = useState({
     type: "",
     message: "",
   });
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [addModal, setAddModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -56,8 +60,22 @@ function Main() {
       taskFiltered.title = title;
       taskFiltered.keywords = '[\"' + keyword1 + '\",\"' + keyword2 + '\",\"' + keyword3 + '\"]';
 
-      fetchWithToken(`list/${handleTaskId}`, { title, keywords: myKeywords}, 'PATCH').then((res) => { });
-      setEditModal(false);
+      fetchWithToken(`list/${handleTaskId}`, { title, keywords: myKeywords}, 'PATCH').then((res) => {
+        console.log(res);
+
+        if (res.status) {
+          setNotification({
+            type: "error",
+            message: res.message.includes("title") ? "Título no puede estar vacío" : "Palabra(s) clave no puede estar vacío",
+          });
+        } else {
+          setNotification({
+            type: "success",
+            message: "Lista actualizada correctamente",
+          });
+          setEditModal(false);
+        }
+      });
     }
     else {  // Sino, crear objeto con nueva tarea
       const keywordsList = [...myKeywords];
@@ -66,18 +84,24 @@ function Main() {
         keywords: keywordsList
       };
 
-      fetchWithToken('list', newTask, 'POST').then((res) => {
-        console.log(res);
+      fetchWithToken('list', newTask, 'POST').then((res) => {        
         if (res.msg) {
           setNotification({
             type: "success",
             message: res.msg,
           });
+
+          setListTasks([...listTasks, res.list]);
+          setAddModal(false);
         }
-        setListTasks([...listTasks, res.list]);
+
+        if (res.status) {
+          setNotification({
+            type: "error",
+            message: res.message.includes("title") ? "Título no puede estar vacío" : "Palabra(s) clave no puede estar vacío",
+          });
+        }
       });
-      
-      setAddModal(false);
     }
   };
 
@@ -105,11 +129,23 @@ function Main() {
   };
 
   const confirmDeleteTask = () => {
-    fetchWithToken(`list/${handleTaskId}`, {}, 'DELETE').then((res) => { });
-    
-    setDeleteConfirmationModal(false);
-    const newList = listTasks.filter(task => task.id !== handleTaskId);
-    setListTasks(newList);
+    fetchWithToken(`list/${handleTaskId}`, {}, 'DELETE').then((res) => {
+      if (res.msg) {
+        setNotification({
+          type: "success",
+          message: "Lista removida correctamente",
+        });
+
+        setDeleteConfirmationModal(false);
+        const newList = listTasks.filter(task => task.id !== handleTaskId);
+        setListTasks(newList);
+      } else {
+        setNotification({
+          type: "error",
+          message: "Hubo un error.",
+        });
+      }
+    });
   };
 
   if (isLoading) { // si está cargando, mostramos un texto que lo indique
@@ -378,10 +414,10 @@ function Main() {
               icon="XCircle"
               className="w-16 h-16 text-danger mx-auto mt-3"
             />
-            <div className="text-3xl mt-5">Are you sure?</div>
+            <div className="text-3xl mt-5">¿Está seguro?</div>
             <div className="text-slate-500 mt-2">
-              Do you really want to delete these records? <br />
-              This process cannot be undone.
+              ¿Realmente desea eliminar este registro? <br />
+              Este proceso no se puede deshacer.
             </div>
           </div>
           <div className="px-5 pb-8 text-center">
@@ -392,13 +428,13 @@ function Main() {
               }}
               className="btn btn-outline-secondary w-24 mr-1"
             >
-              Cancel
+              Cancelar
             </button>
             <button 
               type="button"
               onClick={confirmDeleteTask}
               className="btn btn-danger w-24">
-              Delete
+              Eliminar
             </button>
           </div>
         </ModalBody>

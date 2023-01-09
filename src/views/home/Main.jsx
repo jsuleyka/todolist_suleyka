@@ -1,15 +1,31 @@
-import { useState, useEffect } from "react";
 import React from "react";
+import { useState, useEffect } from "react";
+import { Alert, Lucide } from "@/base-components";
 import { fetchLessToken } from "@/api";
 
 function Main() {
+  const [notification, setNotification] = useState({
+    type: "",
+    message: "",
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Obtener vista home
     fetchLessToken('/', 'GET', {}).then((res) => { 
-      console.log(res);
-      setIsLoading(false);
+      if (res.msg) {
+        setNotification({
+          type: "success",
+          message: "Bienvenido!",
+        });
+
+        setIsLoading(false);
+      } else {
+        setNotification({
+          type: "error",
+          message: "Hubo un error.",
+        });
+      }
     });
   }, []);
 
@@ -28,9 +44,57 @@ function Main() {
   }
 
   return (
-    <div className="intro-y flex items-center mt-8">
-      <h1 className="text-3xl font-medium mr-auto">Bienvenido a Panel!</h1>
-    </div>
+    <>
+      <div className="intro-y flex items-center mt-8">
+        <h1 className="text-3xl font-medium mr-auto">Bienvenido a Panel!</h1>
+      </div>
+
+      {/* BEGIN: Alert Content */}       
+      {notification.type.includes("error") && (
+        <Alert className="fixed z-50 top-[5vw] right-[5vw] alert-danger w-[20vw] flex items-center mb-2">
+          {({ dismiss }) => (
+            <>
+              <Lucide icon="AlertOctagon" className="w-6 h-6 mr-2" />
+              <span>{notification.message}</span>
+              <button
+                type="button"
+                className="btn-close text-white"
+                aria-label="Close"
+                onClick={() => {
+                  dismiss();
+                  setNotification({ type: "", message: "" });
+                }}
+              >
+                <Lucide icon="X" className="ml-5 w-4 h-4" />
+              </button>
+            </>
+          )}
+        </Alert>
+      )}
+
+      {notification.type.includes("success") && (
+        <Alert className="fixed z-50 top-[5vw] right-[5vw] alert-success text-white w-[20vw] flex items-center mb-2">
+          {({ dismiss }) => (
+            <>
+              <Lucide icon="AlertTriangle" className="w-6 h-6 mr-2" />
+              <span>{notification.message}</span>
+              <button
+                type="button"
+                className="btn-close text-white"
+                aria-label="Close"
+                onClick={() => {
+                  dismiss();
+                  setNotification({ type: "", message: "" });
+                }}
+              >
+                <Lucide icon="X" className="ml-5 w-4 h-4" />
+              </button>
+            </>
+          )}
+        </Alert>
+      )}
+      {/* END: Alert Content */}
+    </>
   );
 }
 

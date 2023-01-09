@@ -1,4 +1,5 @@
 import {
+  Alert,
   Lucide,
   Modal,
   ModalBody,
@@ -12,6 +13,10 @@ function Main() {
   const { taskId } = useParams();
   // const isPostRoute = useRouteMatch("/page-2/:taskId");
 
+  const [notification, setNotification] = useState({
+    type: "",
+    message: "",
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [addModal, setAddModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -44,7 +49,9 @@ function Main() {
 
   const subTasksCompleted = subTasks.filter(subTask => subTask.completed);
   const subTasksPend = subTasks.filter(subTask => !subTask.completed);
-  const taskFind = listTasks.find(task => task.id == taskId);
+  const taskFind = listTasks.filter(task => { 
+    return task.id == taskId
+  })[0]; 
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -55,8 +62,21 @@ function Main() {
     if (!!subTaskFiltered) {
       subTaskFiltered.title = title;
 
-      fetchWithToken(`list/${taskId}/tasks/${handleSubTaskId}`, { title }, 'PATCH').then((res) => { });
-      setEditModal(false);
+      fetchWithToken(`list/${taskId}/tasks/${handleSubTaskId}`, { title }, 'PATCH').then((res) => {
+        if (res.status) {
+          setNotification({
+            type: "error",
+            message: "Título no puede estar vacío",
+          });
+        } else {
+          setNotification({
+            type: "success",
+            message: "Tarea actualizada correctamente",
+          });
+
+          setEditModal(false);
+        }
+      });
     }
     else {  // Sino, crear objeto con nueva tarea
       const newSubTask = {
@@ -65,9 +85,21 @@ function Main() {
       };
 
       fetchWithToken(`list/${taskId}/tasks`, newSubTask, 'POST').then((res) => {
-        setSubTasks([...subTasks, res]);
+        if (res.status) {
+          setNotification({
+            type: "error",
+            message: "Título no puede estar vacío",
+          });
+        } else {
+          setNotification({
+            type: "success",
+            message: "Tarea creada correctamente",
+          });
+
+          setSubTasks([...subTasks, res]);
+          setAddModal(false);
+        }
       });
-      setAddModal(false);
     }
   };
 
@@ -100,9 +132,22 @@ function Main() {
     if (!!subTaskFiltered) {
       subTaskFiltered.completed = !status;
 
-      fetchWithToken(`list/${taskId}/tasks/${handleSubTaskId}`, { completed: !status }, 'PATCH').then((res) => { });
+      fetchWithToken(`list/${taskId}/tasks/${handleSubTaskId}`, { completed: !status }, 'PATCH').then((res) => {
+        if (res.status) {
+          setNotification({
+            type: "error",
+            message: "Hubo un error.",
+          });
+        } else {
+          setNotification({
+            type: "success",
+            message: "Estado actualizado correctamente",
+          });
+
+          setStatusConfirmationModal(false);
+        }
+      });
     }
-    setStatusConfirmationModal(false);
   };
 
   const handleDelete = subTaskId => {
@@ -112,11 +157,23 @@ function Main() {
   };
 
   const confirmDeleteTask = () => {
-    fetchWithToken(`list/${taskId}/tasks/${handleSubTaskId}`, {}, 'DELETE').then((res) => { });
+    fetchWithToken(`list/${taskId}/tasks/${handleSubTaskId}`, {}, 'DELETE').then((res) => {
+      if (res.msg) {
+        setNotification({
+          type: "success",
+          message: res.msg,
+        });
 
-    setDeleteConfirmationModal(false);
-    const newList = subTasks.filter(subTask => subTask.id !== handleSubTaskId);
-    setSubTasks(newList);
+        setDeleteConfirmationModal(false);
+        const newList = subTasks.filter(subTask => subTask.id !== handleSubTaskId);
+        setSubTasks(newList);
+      } else {
+        setNotification({
+          type: "error",
+          message: "Hubo un error.",
+        });
+      }
+    });
   };
 
   if (isLoading) { // si está cargando, mostramos un texto que lo indique
@@ -427,6 +484,52 @@ function Main() {
         </ModalBody>
       </Modal>
       {/* END: Delete Confirmation Modal */}
+
+      {/* BEGIN: Alert Content */}       
+      {notification.type.includes("error") && (
+        <Alert className="fixed z-50 top-[5vw] right-[5vw] alert-danger w-[20vw] flex items-center mb-2">
+          {({ dismiss }) => (
+            <>
+              <Lucide icon="AlertOctagon" className="w-6 h-6 mr-2" />
+              <span>{notification.message}</span>
+              <button
+                type="button"
+                className="btn-close text-white"
+                aria-label="Close"
+                onClick={() => {
+                  dismiss();
+                  setNotification({ type: "", message: "" });
+                }}
+              >
+                <Lucide icon="X" className="ml-5 w-4 h-4" />
+              </button>
+            </>
+          )}
+        </Alert>
+      )}
+
+      {notification.type.includes("success") && (
+        <Alert className="fixed z-50 top-[5vw] right-[5vw] alert-success text-white w-[20vw] flex items-center mb-2">
+          {({ dismiss }) => (
+            <>
+              <Lucide icon="AlertTriangle" className="w-6 h-6 mr-2" />
+              <span>{notification.message}</span>
+              <button
+                type="button"
+                className="btn-close text-white"
+                aria-label="Close"
+                onClick={() => {
+                  dismiss();
+                  setNotification({ type: "", message: "" });
+                }}
+              >
+                <Lucide icon="X" className="ml-5 w-4 h-4" />
+              </button>
+            </>
+          )}
+        </Alert>
+      )}
+      {/* END: Alert Content */}
     </>
   );
 }

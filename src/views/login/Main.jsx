@@ -33,7 +33,7 @@ function Main() {
 
   const notify = msg => toast(msg);
 
-  const handleSubmitLogin = () => {
+  const handleLogin = () => {
     // Obtener mi login
     fetchWithToken('auth/login', login, 'POST').then((res) => { 
       setToken(res.accessToken);
@@ -121,7 +121,7 @@ function Main() {
 
                 <div className="intro-x mt-5 xl:mt-8 text-center xl:text-left">
                   <button 
-                    onClick={handleSubmitLogin}
+                    onClick={handleLogin}
                     className="btn btn-primary py-3 px-4 w-full align-top">
                     Login
                   </button>

@@ -12,6 +12,7 @@ import {
 import { faker as $f } from "@/utils";
 import * as $_ from "lodash";
 import classnames from "classnames";
+import { fetchWithToken } from "@/api";
 
 function Main(props) {
   const [searchDropdown, setSearchDropdown] = useState(false);
@@ -21,6 +22,15 @@ function Main(props) {
   const hideSearchDropdown = () => {
     setSearchDropdown(false);
   };
+
+  const handleLogout = () => {
+    fetchWithToken('auth/logout', {}, 'PATCH').then((res) => {
+      console.log(res);
+      // localStorage.removeItem("token-info");
+    });
+    // setToken(null);
+    // setUser(null);
+  }
 
   return (
     <>
@@ -212,7 +222,7 @@ function Main(props) {
                 <Lucide icon="HelpCircle" className="w-4 h-4 mr-2" /> Help
               </DropdownItem>
               <DropdownDivider className="border-white/[0.08]" />
-              <DropdownItem className="hover:bg-white/5">
+              <DropdownItem className="hover:bg-white/5" onClick={handleLogout}>
                 <Lucide icon="ToggleRight" className="w-4 h-4 mr-2" /> Logout
               </DropdownItem>
             </DropdownContent>

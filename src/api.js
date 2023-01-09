@@ -52,7 +52,7 @@ export const fetchLessToken = (endpoint, method = 'GET', data) => {
 export const fetchWithToken = (endpoint, data, method = 'GET') => {
     const url = `${baseURL}/${endpoint}`;
     const token = localStorage.getItem('token-info') || '';
-    // console.log(token);
+    console.log(token);
     
     if(method === 'GET'){
         return fetch(url, {

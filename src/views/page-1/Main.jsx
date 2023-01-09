@@ -164,22 +164,23 @@ function Main() {
 
   return (
     <>
-      <div className="intro-y flex items-center mt-8">
+      <div className="intro-y flex mt-8">
         <h2 className="text-3xl font-medium mr-auto">Lista de Tareas</h2>
       </div>
-      <div className="intro-y flex items-right mt-4">
+      <div className="intro-y mt-4">
         <button
           href="#"
           onClick={() => {
             setAddModal(true);
           }}
-          className="btn btn-primary shadow-md mr-2">
+          className="btn btn-primary shadow-md">
           Nueva Tarea
         </button>
       </div>
 
+      {/* flex flex-wrap justify-center */}
       <div
-        className="flex flex-wrap justify-center">
+        className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-4">  
         {/* BEGIN: Page Layout */}
         {
           //map para pintar mi lista
@@ -188,8 +189,8 @@ function Main() {
               <div 
                 key={task.id}
                 id={task.id}
-                className="w-full xs:w-1/2 lg:w-1/3 zoom-in intro-y flex flex-wrap content-between box p-5 mt-5 mr-4">
-                  <div>
+                className="zoom-in intro-y flex flex-col box p-5">
+                  <div className="mb-auto">
                     <h3 className="text-2xl font-medium">{task.title}</h3>
                     <p className="text-lg">{task.keywords}</p>
                   </div>

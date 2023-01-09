@@ -53,9 +53,10 @@ function Main() {
     return task.id == taskId
   })[0]; 
 
-  const handleSubmit = e => {
-    e.preventDefault()
+  if (!taskFind) return null;
 
+  const handleSubmit = e => {
+    e.preventDefault();
     const subTaskFiltered = subTasks.find(subTask => subTask.id === handleSubTaskId);
 
     // Si existe la tarea filtrado por id, devuelve true y actualiza los datos

@@ -14,7 +14,7 @@ import { faker as $f } from "@/utils";
 import * as $_ from "lodash";
 import classnames from "classnames";
 import { useNavigate } from "react-router-dom";
-import { fetchWithToken } from "@/api";
+import { fetchLogout } from "@/api";
 
 function Main(props) {
   const navigateTo = useNavigate();
@@ -38,17 +38,8 @@ function Main(props) {
 
   const handleLogout = () => {
     setHideDropDown(true);
-
-    // if (currentToken) {
-    //   localStorage.removeItem("token-info");
-    //   localStorage.removeItem("user-info");
-    //   // setHideDropDown(true);
-    //   console.log(hideDropDown);
-    //   navigateTo('/');
-    // }
   
-    fetchWithToken('auth/logout', {}, 'PATCH').then((res) => {
-      console.log(res);
+    fetchLogout('auth/logout', 'PATCH').then((res) => {
       localStorage.removeItem("token-info");
       localStorage.removeItem("user-info");
       navigateTo('/');

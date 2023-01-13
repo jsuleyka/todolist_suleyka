@@ -38,7 +38,6 @@ function Main() {
       if (res.success) {
         const currentUser = JSON.stringify(res.user);
         setToken(res.accessToken);
-        console.log(token);
 
         localStorage.setItem("token-info", res.accessToken);
         localStorage.setItem("user-info", currentUser);

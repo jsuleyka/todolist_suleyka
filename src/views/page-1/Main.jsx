@@ -61,8 +61,6 @@ function Main() {
       taskFiltered.keywords = '[\"' + keyword1 + '\",\"' + keyword2 + '\",\"' + keyword3 + '\"]';
 
       fetchWithToken(`list/${handleTaskId}`, { title, keywords: myKeywords}, 'PATCH').then((res) => {
-        console.log(res);
-
         if (res.status) {
           setNotification({
             type: "error",

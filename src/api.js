@@ -17,7 +17,6 @@ export const fetchData = (url, method, data) =>
 export const fetchDataList = (endpoint, method) => {
     const url = `${baseURL}/${endpoint}`;
     const token = localStorage.getItem('token-info') || '';
-    console.log(token);
     
     return fetch(url, {
         method: method,

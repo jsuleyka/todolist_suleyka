@@ -15,6 +15,9 @@ const init = (el, props) => {
   const dropdown = tailwind.Dropdown.getOrCreateInstance(el);
   setTimeout(() => {
     const isDropdownShowed = dom(el).find("[data-dropdown-replacer]").length;
+    // if (!props.showChangePage) dropdown.hide();
+    // console.log(props.showChangePage);
+
     if (props.show && !isDropdownShowed) {
       dropdown.show();
     } else if (!props.show && isDropdownShowed) {

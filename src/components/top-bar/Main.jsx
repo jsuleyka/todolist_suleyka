@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  Alert,
   Lucide,
   Dropdown,
   DropdownToggle,
@@ -12,10 +13,22 @@ import {
 import { faker as $f } from "@/utils";
 import * as $_ from "lodash";
 import classnames from "classnames";
+import { useNavigate } from "react-router-dom";
 import { fetchWithToken } from "@/api";
 
 function Main(props) {
+  const navigateTo = useNavigate();
   const [searchDropdown, setSearchDropdown] = useState(false);
+  const [hideDropDown, setHideDropDown] = useState(false);
+  const [notification, setNotification] = useState({
+    type: "",
+    message: "",
+  });
+  const currentToken = localStorage.getItem('token-info');
+  const userString = localStorage.getItem('user-info');
+  const userObject = JSON.parse(userString);
+  // const currentLogin = { email: currentEmail, password: currentPassword };
+  
   const showSearchDropdown = () => {
     setSearchDropdown(true);
   };
@@ -24,12 +37,22 @@ function Main(props) {
   };
 
   const handleLogout = () => {
+    setHideDropDown(true);
+
+    // if (currentToken) {
+    //   localStorage.removeItem("token-info");
+    //   localStorage.removeItem("user-info");
+    //   // setHideDropDown(true);
+    //   console.log(hideDropDown);
+    //   navigateTo('/');
+    // }
+  
     fetchWithToken('auth/logout', {}, 'PATCH').then((res) => {
       console.log(res);
-      // localStorage.removeItem("token-info");
+      localStorage.removeItem("token-info");
+      localStorage.removeItem("user-info");
+      navigateTo('/');
     });
-    // setToken(null);
-    // setUser(null);
   }
 
   return (
@@ -189,7 +212,7 @@ function Main(props) {
         </Dropdown>
         {/* END: Notifications  */}
         {/* BEGIN: Account Menu */}
-        <Dropdown className="intro-x w-8 h-8">
+        <Dropdown className="intro-x w-8 h-8" show={hideDropDown}>
           <DropdownToggle
             tag="div"
             role="button"
@@ -203,7 +226,7 @@ function Main(props) {
           <DropdownMenu className="w-56">
             <DropdownContent className="bg-primary text-white">
               <DropdownHeader tag="div" className="!font-normal">
-                <div className="font-medium">{$f()[0].users[0].name}</div>
+                <div className="font-medium">{userObject.firstName}</div>
                 <div className="text-xs text-white/70 mt-0.5 dark:text-slate-500">
                   {$f()[0].jobs[0]}
                 </div>
@@ -222,7 +245,9 @@ function Main(props) {
                 <Lucide icon="HelpCircle" className="w-4 h-4 mr-2" /> Help
               </DropdownItem>
               <DropdownDivider className="border-white/[0.08]" />
-              <DropdownItem className="hover:bg-white/5" onClick={handleLogout}>
+              <DropdownItem className="hover:bg-white/5" onClick={() => {
+                  handleLogout();
+                }}>
                 <Lucide icon="ToggleRight" className="w-4 h-4 mr-2" /> Logout
               </DropdownItem>
             </DropdownContent>
@@ -231,6 +256,52 @@ function Main(props) {
         {/* END: Account Menu */}
       </div>
       {/* END: Top Bar */}
+
+      {/* BEGIN: Alert Content */}       
+      {notification.type.includes("error") && (
+        <Alert className="fixed z-50 top-[5vw] right-[5vw] alert-danger w-[20vw] flex items-center mb-2">
+          {({ dismiss }) => (
+            <>
+              <Lucide icon="AlertOctagon" className="w-6 h-6 mr-2" />
+              <span>{notification.message}</span>
+              <button
+                type="button"
+                className="btn-close text-white"
+                aria-label="Close"
+                onClick={() => {
+                  dismiss();
+                  setNotification({ type: "", message: "" });
+                }}
+              >
+                <Lucide icon="X" className="ml-5 w-4 h-4" />
+              </button>
+            </>
+          )}
+        </Alert>
+      )}
+
+      {notification.type.includes("success") && (
+        <Alert className="fixed z-50 top-[5vw] right-[5vw] alert-success text-white w-[20vw] flex items-center mb-2">
+          {({ dismiss }) => (
+            <>
+              <Lucide icon="AlertTriangle" className="w-6 h-6 mr-2" />
+              <span>{notification.message}</span>
+              <button
+                type="button"
+                className="btn-close text-white"
+                aria-label="Close"
+                onClick={() => {
+                  dismiss();
+                  setNotification({ type: "", message: "" });
+                }}
+              >
+                <Lucide icon="X" className="ml-5 w-4 h-4" />
+              </button>
+            </>
+          )}
+        </Alert>
+      )}
+      {/* END: Alert Content */}
     </>
   );
 }

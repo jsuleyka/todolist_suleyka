@@ -20,7 +20,6 @@ function Main() {
   // const [errorMessage, setErrorMessage] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState({});
   const [token, setToken] = useState('');
   const login = { email, password };
   
@@ -35,15 +34,14 @@ function Main() {
 
   const handleLogin = () => {
     // Obtener mi login
-    fetchWithToken('auth/login', login, 'POST').then((res) => { 
-      setToken(res.accessToken);
-      setUser(res.user);
-      console.log(res);
-
-      localStorage.setItem("token-info", res.accessToken);
-      localStorage.setItem("user-info", res.user);
-
+    fetchWithToken('auth/login', login, 'POST').then((res) => {
       if (res.success) {
+        const currentUser = JSON.stringify(res.user);
+        setToken(res.accessToken);
+        console.log(token);
+
+        localStorage.setItem("token-info", res.accessToken);
+        localStorage.setItem("user-info", currentUser);
         navigateTo('/admin');
       }
 
